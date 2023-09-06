@@ -64,7 +64,6 @@ Model modelEclipseRearWheels;
 Model modelEclipseFrontalWheels;
 Model modelHeliChasis;
 Model modelHeliHeli;
-Model modelHeliHeliTracera;
 Model modelLambo;
 Model modelLamboLeftDor;
 Model modelLamboRightDor;
@@ -109,7 +108,6 @@ int lastMousePosY, offsetY = 0;
 glm::mat4 modelMatrixEclipse = glm::mat4(1.0f);
 glm::mat4 matrixModelRock = glm::mat4(1.0);
 glm::mat4 modelMatrixHeli = glm::mat4(1.0f);
-glm::mat4 modelMatrixHeliTracera = glm::mat4(1.0f);
 glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
@@ -140,7 +138,6 @@ int numPasosDart = 0;
 
 // Var animate helicopter
 float rotHelHelY = 0.0;
-float rotHelhelTracera=0.0;
 
 // Var animate lambo dor
 int stateDoor = 0;
@@ -255,8 +252,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelHeliChasis.setShader(&shaderMulLighting);
 	modelHeliHeli.loadModel("../models/Helicopter/Mi_24_heli.obj");
 	modelHeliHeli.setShader(&shaderMulLighting);
-	modelHeliHeliTracera.loadModel("../models/Helicopter/Mi_24_heli_tracera.obj");
-	modelHeliHeliTracera.setShader(&shaderMulLighting);
 	// Lamborginhi
 	modelLambo.loadModel("../models/Lamborginhi_Aventador_OBJ/Lamborghini_Aventador_chasis.obj");
 	modelLambo.setShader(&shaderMulLighting);
@@ -490,7 +485,6 @@ void destroy() {
 	modelEclipseRearWheels.destroy();
 	modelHeliChasis.destroy();
 	modelHeliHeli.destroy();
-	modelHeliHeliTracera.destroy();
 	modelLambo.destroy();
 	modelLamboFrontLeftWheel.destroy();
 	modelLamboFrontRightWheel.destroy();
@@ -678,8 +672,6 @@ void applicationLoop() {
 	float rotWheelsY = 0.0;
 	int numberAdvance = 0;
 	int maxAdvance = 0.0;
-	const float avanceEclipse = 0.1;
-	const float rotEclipse = 0.5;
 
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
@@ -915,12 +907,7 @@ void applicationLoop() {
 		modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0, 1, 0));
 		modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 		modelHeliHeli.render(modelMatrixHeliHeli);
-		glm::mat4 modelMatrixHeliTracera=glm::mat4(modelMatrixHeliChasis);
-		modelMatrixHeliTracera= glm::translate(modelMatrixHeliTracera,glm::vec3(0.400524, 2.0928, -5.64124));
-		modelMatrixHeliTracera=glm::rotate(modelMatrixHeliTracera, rotHelhelTracera,glm::vec3(1.0 ,0.0 ,0.0));//heltracera
-		modelMatrixHeliTracera= glm::translate(modelMatrixHeliTracera,glm::vec3(-0.400524, -2.0928, 5.64124));
-		modelHeliHeliTracera.render(modelMatrixHeliTracera);
-		
+
 		// Lambo car
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
@@ -1009,77 +996,6 @@ void applicationLoop() {
 
 		// Constantes de animaciones
 		rotHelHelY += 0.5;
-		//********************maquina de estados inicio******************
-		switch (state)
-		{
-		case 0:
-			if (numberAdvance == 0)
-				maxAdvance=65.0f;
-			else if (numberAdvance==1)
-				maxAdvance=49.0f;
-			else if (numberAdvance==2)
-				maxAdvance=44.5f;
-			else if (numberAdvance==3)
-				maxAdvance=49.0f;
-			else if (numberAdvance==4)
-				maxAdvance=44.5f;
-			state=1;
-			break;
-		case 1:
-			modelMatrixEclipse=glm::translate(modelMatrixEclipse,glm::vec3(0.0,0.0,avanceEclipse));
-			advanceCount+=avanceEclipse;
-			rotWheelsX+=0.05f;
-			rotWheelsY-=0.02f;
-			if(rotWheelsY<0)
-				rotWheelsY=0;
-			if(advanceCount > maxAdvance){
-				advanceCount=0.0;
-				numberAdvance++;
-				state=2;
-				if(advanceCount>4)
-					advanceCount=1;
-			}
-			break;
-		case 2:
-			modelMatrixEclipse= glm::translate(modelMatrixEclipse,glm::vec3(0,0,0.025));
-			modelMatrixEclipse= glm::rotate(modelMatrixEclipse,glm::radians(rotEclipse),glm::vec3(0.0f,1.0f,0.0f));
-			rotCount+=rotEclipse;
-			rotWheelsX+=0.05f;
-			rotWheelsY+=0.02f;
-			if(rotWheelsY > 0.25)
-				rotWheelsY=0.25;
-			if(rotCount >= 90.0){
-				rotCount = 0;
-				state = 0;
-				if(numberAdvance > 4)
-					numberAdvance = 1;
-			}
-			break;
-
-		default:
-			break;
-		}
-		//***************************maquina de estados fin*****************************
-		//mquina de estado lambo
-		switch (stateDoor)
-		{
-		case 0:
-			dorRotCount+=0.5;
-			if(dorRotCount > 75)
-			stateDoor = 1;
-			break;
-		case 1: 
-			dorRotCount-=0.5;
-			if(dorRotCount < 0){
-				dorRotCount =0.0;
-				stateDoor=0;
-			}
-		default:
-			break;
-		}
-		//constantes de animaciones
-		rotHelHelY+=0.5;
-		rotHelhelTracera += 0.5;
 
 		glfwSwapBuffers(window);
 	}
