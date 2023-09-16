@@ -860,8 +860,10 @@ void applicationLoop() {
 	bool psi = true;
 
 	//model practica 01 nero y lucy
-	modelmatrixNero = glm::translate(modelmatrixNero , glm::vec3(0.0, 0.0, 0.0));
-	modelmatrixLucy = glm::translate(modelmatrixLucy , glm::vec3(0.0, 0.0, 0.0));
+	/*modelmatrixNero = glm::translate(modelmatrixNero , glm::vec3(0.0, 1.0, 0.0));
+	modelNero.render(modelmatrixNero);
+	modelmatrixLucy = glm::translate(modelmatrixLucy , glm::vec3(10.0, 1.0, 0.0));
+	modelLucy.render(modelmatrixLucy);*/
 	//car ecip
 	modelMatrixEclipse = glm::translate(modelMatrixEclipse, glm::vec3(27.5, 0, 30.0));
 	modelMatrixEclipse = glm::rotate(modelMatrixEclipse, glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -904,9 +906,9 @@ void applicationLoop() {
 
 	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0.0, 0.0));
 
-	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
+	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(15.0, 0.0, 20.0));
 
-	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(15.0,0.0,-10.5));
+	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(15.0,0.0,-10.0));
 
 	// Variables to interpolation key frames
 	//dart
@@ -1116,13 +1118,16 @@ void applicationLoop() {
 		//Modelos Practica 1
 		//glDisable(GL_CULL_FACE);
 		glm::mat4 modelmatrixNero = glm::mat4(1.0);
+		modelmatrixNero = glm::translate(modelmatrixNero,glm::vec3(19.5,1.0,4.0));
 		modelmatrixNero = glm::scale(modelmatrixNero ,glm::vec3(100.5, 100.5, 100.5));
 		modelmatrixNero = glm::rotate(modelmatrixNero,glm::radians(90.0f),glm::vec3(0,1,0));
 		modelNero.render(modelmatrixNero);
 
 		//glDisable(GL_CULL_FACE);
 		glm::mat4 modelmatrixLucy = glm::mat4(1.0);
-		modelmatrixLucy = glm::scale(modelmatrixLucy, glm::vec3(5.5, 5.5, 5.5));
+		modelmatrixLucy = glm::translate(modelmatrixLucy,glm::vec3(31.0,0.0,4.0));
+		modelmatrixLucy = glm::scale(modelmatrixLucy, glm::vec3(2.5, 2.5, 2.5));
+		modelmatrixLucy = glm::rotate(modelmatrixLucy,glm::radians(-90.0f),glm::vec3(0,1,0));
 		modelLucy.render(modelmatrixLucy);
 
 		// Render for the eclipse car
@@ -1142,7 +1147,6 @@ void applicationLoop() {
 		modelMatrixRearWheels = glm::rotate(modelMatrixRearWheels, rotWheelsX, glm::vec3(1, 0, 0));
 		modelMatrixRearWheels = glm::translate(modelMatrixRearWheels, glm::vec3(0.0, -1.05813, 4.35157));
 		modelEclipseRearWheels.render(modelMatrixRearWheels);
-
 		// Helicopter
 		glm::mat4 modelMatrixHeliChasis = glm::mat4(modelMatrixHeli);
 		modelHeliChasis.render(modelMatrixHeliChasis);
