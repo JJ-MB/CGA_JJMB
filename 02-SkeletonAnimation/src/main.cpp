@@ -82,6 +82,21 @@ Model modelDartLegoRightHand;
 Model modelDartLegoLeftLeg;
 Model modelDartLegoRightLeg;
 
+// Modelo del Buzz
+Model modelBuzzHead;
+Model modelBuzzTorso;
+Model modelBuzzLeftArm;
+Model modelBuzzLeftForeArm;
+Model modelBuzzLeftHand;
+Model modelBuzzRightArm;
+Model modelBuzzRightForeArm;
+Model modelBuzzRightHand;
+Model modelBuzzLeftWing1, modelBuzzLeftWing2;
+Model modelBuzzRightWing1, modelBuzzRightWing2;
+Model modelBuzzHip;
+Model modelBuzzLeftThigh, modelBuzzLeftCalf, modelBuzzLeftFoot;
+Model modelBuzzRightThigh, modelBuzzRightCalf, modelBuzzRightFoot;
+
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
 
@@ -135,6 +150,20 @@ int indexFrameDartNext = 1;
 float interpolationDart = 0.0;
 int maxNumPasosDart = 200;
 int numPasosDart = 0;
+
+// Joints interpolation of Buzz
+std::vector<std::vector<float>> keyFramesBuzzJoints;
+std::vector<std::vector<glm::mat4>> keyFramesBuzz;
+int indexFrameBuzzJoints = 0;
+int indexFrameBuzzJointsNext = 1;
+float interpolationBuzzJoints = 0.0;
+int maxNumPasosBuzzJoints = 20;
+int numPasosBuzzJoints = 0;
+int indexFrameBuzz = 0;
+int indexFrameBuzzNext = 1;
+float interpolationBuzz = 0.0;
+int maxNumPasosBuzz = 200;
+int numPasosBuzz = 0;
 
 // Var animate helicopter
 float rotHelHelY = 0.0;
@@ -673,6 +702,20 @@ void applicationLoop() {
 	int numberAdvance = 0;
 	int maxAdvance = 0.0;
 
+	//lambo inicio----------------------------
+	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0, 30.0));
+	modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(180.0f), glm::vec3(0, 1, 0));
+	
+	int numberRotateLambo = 0;
+	float distanceMaxLambo = 0.0;
+	float rotationWheelLamboX = 0.0;
+	float rotationWheelLamboY = 0.0;
+	float advanceDistanceLambo = 0.0;
+	float rotationLambo = 0.0;
+	bool BanderaLamboVueltas = true;
+
+	//lambo fin------------------------------
+
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
 	modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(5.0, 10.0, -5.0));
@@ -908,22 +951,44 @@ void applicationLoop() {
 		modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 		modelHeliHeli.render(modelMatrixHeliHeli);
 
-		// Lambo car
+		//lambo
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
 		modelMatrixLamboChasis = glm::scale(modelMatrixLamboChasis, glm::vec3(1.3, 1.3, 1.3));
 		modelLambo.render(modelMatrixLamboChasis);
 		glActiveTexture(GL_TEXTURE0);
 		glm::mat4 modelMatrixLamboLeftDor = glm::mat4(modelMatrixLamboChasis);
-		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(1.08676, 0.707316, 0.982601));
-		modelMatrixLamboLeftDor = glm::rotate(modelMatrixLamboLeftDor, glm::radians(dorRotCount), glm::vec3(1.0, 0, 0));
-		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(-1.08676, -0.707316, -0.982601));
+		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(1.0867f, 0.702597, 0.982446f));
+		modelMatrixLamboLeftDor = glm::rotate(modelMatrixLamboLeftDor, glm::radians(dorRotCount), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(-1.0867f, -0.702597, -0.982446f));
 		modelLamboLeftDor.render(modelMatrixLamboLeftDor);
 		modelLamboRightDor.render(modelMatrixLamboChasis);
-		modelLamboFrontLeftWheel.render(modelMatrixLamboChasis);
-		modelLamboFrontRightWheel.render(modelMatrixLamboChasis);
-		modelLamboRearLeftWheel.render(modelMatrixLamboChasis);
-		modelLamboRearRightWheel.render(modelMatrixLamboChasis);
+
+		glm::mat4 modelMatrixLamboFrontLeftWheel = glm::mat4(modelMatrixLamboChasis);
+		modelMatrixLamboFrontLeftWheel = glm::translate(modelMatrixLamboFrontLeftWheel, glm::vec3(0.945086f, 0.374181f, 1.40122f));
+		modelMatrixLamboFrontLeftWheel = glm::rotate(modelMatrixLamboFrontLeftWheel, rotationWheelLamboY, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelMatrixLamboFrontLeftWheel = glm::rotate(modelMatrixLamboFrontLeftWheel, rotationWheelLamboX, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixLamboFrontLeftWheel = glm::translate(modelMatrixLamboFrontLeftWheel, glm::vec3(-0.945086f, -0.374181f, -1.40122f));
+		modelLamboFrontLeftWheel.render(modelMatrixLamboFrontLeftWheel);
+
+		glm::mat4 modelMatrixLamboFrontRightWheel = glm::mat4(modelMatrixLamboChasis);
+		modelMatrixLamboFrontRightWheel = glm::translate(modelMatrixLamboFrontRightWheel, glm::vec3(-0.921142f, 0.376222f, 1.39763f));
+		modelMatrixLamboFrontRightWheel = glm::rotate(modelMatrixLamboFrontRightWheel, rotationWheelLamboY, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelMatrixLamboFrontRightWheel = glm::rotate(modelMatrixLamboFrontRightWheel, rotationWheelLamboX, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixLamboFrontRightWheel = glm::translate(modelMatrixLamboFrontRightWheel, glm::vec3(0.921142f, -0.376222f, -1.39763f));
+		modelLamboFrontRightWheel.render(modelMatrixLamboFrontRightWheel);
+
+		glm::mat4 modelMatrixLamboRearLeftWheel = glm::mat4(modelMatrixLamboChasis);
+		modelMatrixLamboRearLeftWheel = glm::translate(modelMatrixLamboRearLeftWheel, glm::vec3(0.762081f, 0.399241f, -1.59665f));
+		modelMatrixLamboRearLeftWheel = glm::rotate(modelMatrixLamboRearLeftWheel, rotationWheelLamboX, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixLamboRearLeftWheel = glm::translate(modelMatrixLamboRearLeftWheel, glm::vec3(-0.762081f, -0.399241f, 1.59665f));
+		modelLamboRearLeftWheel.render(modelMatrixLamboRearLeftWheel);
+
+		glm::mat4 modelmatrixLamboRearRightWheel = glm::mat4(modelMatrixLamboChasis);
+		modelmatrixLamboRearRightWheel = glm::translate(modelmatrixLamboRearRightWheel, glm::vec3(-0.754293f, 0.397181f, -1.6018f));
+		modelmatrixLamboRearRightWheel = glm::rotate(modelmatrixLamboRearRightWheel, rotationWheelLamboX, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelmatrixLamboRearRightWheel = glm::translate(modelmatrixLamboRearRightWheel, glm::vec3(0.754293f, -0.397181f, 1.6018f));
+		modelLamboRearRightWheel.render(modelmatrixLamboRearRightWheel);
 		// Se regresa el cull faces IMPORTANTE para las puertas
 		glEnable(GL_CULL_FACE);
 
@@ -993,6 +1058,150 @@ void applicationLoop() {
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
+
+		// Para salvar el frame
+		if(record && modelSelected == 1){
+			matrixDartJoints.push_back(rotDartHead);
+			matrixDartJoints.push_back(rotDartLeftArm);
+			matrixDartJoints.push_back(rotDartLeftHand);
+			matrixDartJoints.push_back(rotDartRightArm);
+			matrixDartJoints.push_back(rotDartRightHand);
+			matrixDartJoints.push_back(rotDartLeftLeg);
+			matrixDartJoints.push_back(rotDartRightLeg);
+			if (saveFrame) {
+				appendFrame(myfile, matrixDartJoints);
+				saveFrame = false;
+			}
+		}
+		else if(keyFramesDartJoints.size() > 0){
+			// Para reproducir el frame
+			interpolationDartJoints = numPasosDartJoints / (float) maxNumPasosDartJoints;
+			numPasosDartJoints++;
+			if (interpolationDartJoints > 1.0) {
+				numPasosDartJoints = 0;
+				interpolationDartJoints = 0;
+				indexFrameDartJoints = indexFrameDartJointsNext;
+				indexFrameDartJointsNext++;
+			}
+			if (indexFrameDartJointsNext > keyFramesDartJoints.size() - 1)
+				indexFrameDartJointsNext = 0;
+			rotDartHead = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 0, interpolationDartJoints);
+			rotDartLeftArm = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 1, interpolationDartJoints);
+			rotDartLeftHand = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 2, interpolationDartJoints);
+			rotDartRightArm = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 3, interpolationDartJoints);
+			rotDartRightHand = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 4, interpolationDartJoints);
+			rotDartLeftLeg = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 5, interpolationDartJoints);
+			rotDartRightLeg = interpolate(keyFramesDartJoints, indexFrameDartJoints, indexFrameDartJointsNext, 6, interpolationDartJoints);
+		}
+
+		if (record && modelSelected == 2) {
+			matrixDart.push_back(modelMatrixDart);
+			if (saveFrame) {
+				appendFrame(myfile, matrixDart);
+				saveFrame = false;
+			}
+		}
+		else if (keyFramesDart.size() > 0) {
+			// Para reproducir el frame
+			interpolationDart = numPasosDart / (float)maxNumPasosDart;
+			numPasosDart++;
+			if (interpolationDart > 1.0) {
+				numPasosDart = 0;
+				interpolationDart = 0;
+				indexFrameDart = indexFrameDartNext;
+				indexFrameDartNext++;
+			}
+			if (indexFrameDartNext > keyFramesDart.size() - 1)
+				indexFrameDartNext = 0;
+			modelMatrixDart = interpolate(keyFramesDart, indexFrameDart, indexFrameDartNext, 0, interpolationDart);
+		}
+
+
+		//mquina de estado lambo
+		switch (stateDoor)
+		{
+			case 0:	// Estado: Se abren las puertas
+				dorRotCount += 0.5f;
+				if (dorRotCount > 75.0f)
+					stateDoor = 1;
+				break;
+			case 1:	// Se cierran las puertas
+				dorRotCount -= 0.5f;
+				if (dorRotCount < 0.0f)
+					stateDoor = 2;
+				break;
+			case 2:	// Estado: Con la puerta cerrada, se escoge una distancia limite
+				if (numberRotateLambo == 0)
+					distanceMaxLambo = 60.0f;
+				else if (numberRotateLambo == 1) {
+					if (BanderaLamboVueltas)
+						distanceMaxLambo = 40.0f;
+					else
+						distanceMaxLambo = 35.0f;
+				}
+				else if (numberRotateLambo == 2) {
+					if (BanderaLamboVueltas)
+						distanceMaxLambo = 34.5f;
+					else
+						distanceMaxLambo = 39.5f;
+				}
+				else if (numberRotateLambo == 3) {
+					if (BanderaLamboVueltas)
+						distanceMaxLambo = 40.0f;
+					else
+						distanceMaxLambo = 35.0f;
+				}
+				else if (numberRotateLambo == 4) {
+					if (BanderaLamboVueltas)
+						distanceMaxLambo = 34.5f;
+					else
+						distanceMaxLambo = 39.5f;
+				}
+				// std::cout << "Estado de la vuelta del lambo: " << numberRotateLambo << std::endl;
+				stateDoor = 3;
+				break;
+			case 3:	// Estado: Se recorre la distancia escogida
+				modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.1f));
+				advanceDistanceLambo += 0.1f;
+				rotationWheelLamboX += 0.05f;
+				rotationWheelLamboY -= 0.02f;
+				if (rotationWheelLamboY < 0.0f)
+					rotationWheelLamboY = 0.0f;
+				if (rotationWheelLamboX >= 6.28319f)
+					rotationWheelLamboX = 0.0f;
+				if (advanceDistanceLambo > distanceMaxLambo) {	// Si el carro ya recorrido una distancia establecida
+					advanceDistanceLambo = 0.0f;				// Entonces, reiniciamos el contador de distancia recorrida
+					numberRotateLambo++;						// Aumentamos el numero de vuelta
+					stateDoor = 4;								// Cambiamos al estado de girar media vuelta
+				}
+				break;
+		case 4:	// Estado: El lambo da media vuelta
+				modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.025f));
+				modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+				rotationLambo += 0.5f;
+				rotationWheelLamboX += 0.05f;
+				rotationWheelLamboY += 0.02f;
+				if (rotationWheelLamboY > 0.25f)
+					rotationWheelLamboY = 0.25f;
+				if (rotationLambo >= 90.0f) {
+					rotationLambo = 0.0f;
+					if (numberRotateLambo == 4 && BanderaLamboVueltas) {	// Si el lambo termina el recorrido, entonces debe detenerse y abrir las puertas.
+						BanderaLamboVueltas = false;						// Cambiamos la bandera de la primera vuelta
+						numberRotateLambo = 1;							// Cambiamos la distancia a recorrer
+						stateDoor = 0;									// Cambiamos al estado de abrir las puertas
+					}
+					else if (numberRotateLambo > 4) {
+						numberRotateLambo = 1;		// Cambiamos la distancia a recorrer
+						stateDoor = 0;				// Cambiamos al estado de abrir las puertas
+					}
+					else {							// Si no, entonces debe seguir en movimiento
+						stateDoor = 2;				// Cambiamos al estado de eleccion de distancia limite
+					}
+				}
+		default:
+			break;
+
+		}
 
 		// Constantes de animaciones
 		rotHelHelY += 0.5;
