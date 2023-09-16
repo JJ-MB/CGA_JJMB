@@ -906,9 +906,9 @@ void applicationLoop() {
 
 	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0.0, 0.0));
 
-	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(15.0, 0.0, 20.0));
+	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(15.0, 0.0, -10.0));
 
-	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(15.0,0.0,-10.0));
+	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(15.0,0.0,-15.0));
 
 	// Variables to interpolation key frames
 	//dart
@@ -1210,6 +1210,7 @@ void applicationLoop() {
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixDartBody = glm::mat4(modelMatrixDart);
 		modelMatrixDartBody = glm::scale(modelMatrixDartBody, glm::vec3(0.5, 0.5, 0.5));
+		modelMatrixDartBody = glm::rotate(modelMatrixDartBody, glm::radians(-90.0f),glm::vec3(0.0,1.0,0.0));
 		modelDartLegoBody.render(modelMatrixDartBody);
 		glm::mat4 modelMatrixDartHead = glm::mat4(modelMatrixDartBody);
 		modelMatrixDartHead = glm::rotate(modelMatrixDartHead, rotDartHead, glm::vec3(0, 1, 0));
