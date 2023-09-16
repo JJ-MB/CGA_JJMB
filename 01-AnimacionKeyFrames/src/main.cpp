@@ -1551,7 +1551,7 @@ void applicationLoop() {
 				if (dorRotCount < 0.0f)
 					stateDoor = 2;
 				break;
-			case 2:	// Estado: Con la puerta cerrada, se escoge una distancia limite
+			case 2:	// se escoge una distancia limite a recorrer
 				if (numberRotateLambo == 0)
 					distanceMaxLambo = 60.0f;
 				else if (numberRotateLambo == 1) {
@@ -1590,10 +1590,10 @@ void applicationLoop() {
 					rotationWheelLamboY = 0.0f;
 				if (rotationWheelLamboX >= 6.28319f)
 					rotationWheelLamboX = 0.0f;
-				if (advanceDistanceLambo > distanceMaxLambo) {	// Si el carro ya recorrido una distancia establecida
-					advanceDistanceLambo = 0.0f;				// Entonces, reiniciamos el contador de distancia recorrida
-					numberRotateLambo++;						// Aumentamos el numero de vuelta
-					stateDoor = 4;								// Cambiamos al estado de girar media vuelta
+				if (advanceDistanceLambo > distanceMaxLambo) {	
+					advanceDistanceLambo = 0.0f;				
+					numberRotateLambo++;						
+					stateDoor = 4;								
 				}
 				break;
 			case 4:	// Estado: El lambo da media vuelta
@@ -1606,17 +1606,17 @@ void applicationLoop() {
 					rotationWheelLamboY = 0.25f;
 				if (rotationLambo >= 90.0f) {
 					rotationLambo = 0.0f;
-					if (numberRotateLambo == 4 && BanderaLamboVueltas) {	// Si el lambo termina el recorrido, entonces debe detenerse y abrir las puertas.
-						BanderaLamboVueltas = false;						// Cambiamos la bandera de la primera vuelta
-						numberRotateLambo = 1;							// Cambiamos la distancia a recorrer
-						stateDoor = 0;									// Cambiamos al estado de abrir las puertas
+					if (numberRotateLambo == 4 && BanderaLamboVueltas) {	// Si el lambo termina el recorrido, entonces debe detenerse
+						BanderaLamboVueltas = false;						
+						numberRotateLambo = 1;							
+						stateDoor = 0;									
 					}
 					else if (numberRotateLambo > 4) {
 						numberRotateLambo = 1;		// Cambiamos la distancia a recorrer
-						stateDoor = 0;				// Cambiamos al estado de abrir las puertas
+						stateDoor = 0;				
 					}
 					else {							// Si no, entonces debe seguir en movimiento
-						stateDoor = 2;				// Cambiamos al estado de eleccion de distancia limite
+						stateDoor = 2;				
 					}
 				}
 				break;
