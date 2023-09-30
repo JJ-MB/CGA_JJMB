@@ -33,11 +33,10 @@
 // Include loader Model class
 #include "Headers/Model.h"
 
-
-//
-#include "Headers/Terrain.h"
-
 #include "Headers/AnimationUtils.h"
+
+// Include Terrain
+#include "Headers/Terrain.h"
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
@@ -102,6 +101,9 @@ Model cowboyModelAnimate;
 Model guardianModelAnimate;
 // Cybog
 Model cyborgModelAnimate;
+
+// Terrain model instance
+Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -188,8 +190,6 @@ float dorRotCount = 0.0;
 
 double deltaTime;
 double currTime, lastTime;
-
-
 
 // Variables animacion maquina de estados eclipse
 const float avance = 0.1;
@@ -289,6 +289,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelAircraft.loadModel("../models/Aircraft_obj/E 45 Aircraft_obj.obj");
 	modelAircraft.setShader(&shaderMulLighting);
 
+	//terrain
+	terrain.init();
+	terrain.setShader(&shaderMulLighting);
+
 	// Eclipse
 	modelEclipseChasis.loadModel("../models/Eclipse/2003eclipse_chasis.obj");
 	modelEclipseChasis.setShader(&shaderMulLighting);
@@ -356,6 +360,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 	
+	
+
 	// Cowboy
 	cowboyModelAnimate.loadModel("../models/cowboy/Character Running.fbx");
 	cowboyModelAnimate.setShader(&shaderMulLighting);
@@ -367,10 +373,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Cyborg
 	cyborgModelAnimate.loadModel("../models/cyborg/cyborg.fbx");
 	cyborgModelAnimate.setShader(&shaderMulLighting);
-
-	//terrain init
-	terrain.init();
-	terrain.setshader(&shaderMulLighting); 
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 	
@@ -587,6 +589,7 @@ void destroy() {
 	cowboyModelAnimate.destroy();
 	guardianModelAnimate.destroy();
 	cyborgModelAnimate.destroy();
+	//Terrain.destroy
 	terrain.destroy();
 
 	// Textures Delete
@@ -930,14 +933,20 @@ void applicationLoop() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		*/
 
-		//terrain
-		glBindTexture(GL_TEXTURE_2D, textureCespedID);
+
+		/*******************************************
+		 * Terrain Cesped
+		 *******************************************/
+		glm::mat4 modelCesped = glm::mat4(1.0);
+		modelCesped = glm::translate(modelCesped, glm::vec3(0.0, 0.0, 0.0));
+		modelCesped = glm::scale(modelCesped, glm::vec3(200.0, 0.001, 200.0));
+		// Se activa la textura del agua
 		glActiveTexture(GL_TEXTURE0);
-		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(200, 0f)));
-		
-		
+		glBindTexture(GL_TEXTURE_2D, textureCespedID);
+		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(80, 80)));
+		terrain.setPosition(glm::vec3(100, 0, 100));
 		terrain.render();
-		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(1, 0f)));
+		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(0, 0)));
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		/*******************************************
