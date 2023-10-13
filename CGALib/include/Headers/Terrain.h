@@ -46,7 +46,8 @@ private:
 	float x, z;
 	float size;
 	float maxHeight;
-	float MAX_PIXEL_COLOR = 256 * 256 * 256;
+	//float MAX_PIXEL_COLOR = 256 * 256 * 256;
+  float MAX_PIXEL_COLOR = 256;
 	std::string heightMap;
 	float ** heights;
 	glm::vec3 ** normals;

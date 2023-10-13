@@ -30,6 +30,7 @@ struct  SpotLight{
 	float cutOff;
 	float outerCutOff;
 
+	// factores de atenuación
 	float constant;
     float linear;
     float quadratic;
@@ -54,30 +55,30 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform vec3 viewPos;
   
-uniform vec2 scaleUV;  
+uniform vec2 scaleUV;
   
 uniform sampler2D backgroundTexture;
 uniform sampler2D textureR;
 uniform sampler2D textureG;
 uniform sampler2D textureB;
-uniform sampler2D textureBlendMap;
+uniform sampler2D textureBlendMap; // 4 colores primarios RGBK
 
 vec3 calculateDirectionalLight(Light light, vec3 direction){
 	vec2 tiledCoords = our_uv;
 	if(tiledCoords.x != 0 && tiledCoords.y != 0)
 		tiledCoords = scaleUV * tiledCoords;
 
+	// texture(textura a usar, coordenadas de textura)
 	vec4 blendMapColor = texture(textureBlendMap, our_uv);
-	
 	float cantidadColorBlendMap = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
-	vec4 colorTextureBackground = texture(backgroundTexture, tiledCoords)*cantidadColorBlendMap;
-	vec4 colorTextureR = texture(textureB, tiledCoords) * blendMapColor.r;
+	vec4 colorTextureBackground = texture(backgroundTexture, tiledCoords) * cantidadColorBlendMap;
+	vec4 colorTextureR = texture(textureR, tiledCoords) * blendMapColor.r;
 	vec4 colorTextureG = texture(textureG, tiledCoords) * blendMapColor.g;
 	vec4 colorTextureB = texture(textureB, tiledCoords) * blendMapColor.b;
-	vec4 totalColor = colorTextureBackground + colorTextureR + colorTextureG + colorTextureB
+	vec4 totalColor = colorTextureBackground + colorTextureR + colorTextureG + colorTextureB;
 
-	vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords);
-	vec4 totalColor = backgroundTextureColor;
+	// vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords);
+	// vec4 totalColor = backgroundTextureColor;
 
 	// Ambient
     vec3 ambient  = light.ambient * vec3(totalColor);
